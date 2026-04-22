@@ -1,252 +1,194 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FEZAcademy — Библиотека НРТК</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
-    <style>
-        :root {
-            --bg: #07000d; --pm: #3d0070; --pg: #8b2fc9; --pb: #c678f5; --pu: #e0a8ff;
-            --acc: #bf5af2; --tp: #f0e4ff; --tm: #a07ec0;
-            --glass: rgba(26, 4, 50, 0.65); --border: rgba(140, 50, 200, 0.28);
-            --ibg: rgba(255, 255, 255, 0.043); --ibr: rgba(180, 100, 255, 0.18);
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--tp); min-height: 100vh; display: flex; flex-direction: column; }
-        body::after {
-            content: ''; position: fixed; inset: 0;
-            background: radial-gradient(ellipse 50% 65% at 50% -20%, rgba(100, 20, 180, .25) 0%, rgba(40, 5, 80, .10) 52%, transparent 75%);
-            pointer-events: none; z-index: -1;
-        }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(10, 0, 20, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-        .brand { display: flex; align-items: center; gap: 12px; }
-        .brand-icon { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--pm), var(--pg)); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(125, 38, 196, .5); }
-        .brand-icon svg { width: 18px; height: 18px; fill: #fff; }
-        .brand-name { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; background: linear-gradient(130deg, var(--pu), var(--pb) 55%, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .search-bar { flex: 1; max-width: 400px; position: relative; }
-        .search-bar input { width: 100%; padding: 10px 15px 10px 40px; background: var(--ibg); border: 1px solid var(--ibr); border-radius: 12px; color: var(--tp); outline: none; transition: border-color .3s; }
-        .search-bar input:focus { border-color: var(--acc); }
-        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--tm); width: 16px; height: 16px; }
-        .user-profile { font-size: 0.9rem; color: var(--tm); }
-        .container { display: flex; flex: 1; padding: 30px 40px; gap: 40px; }
-        aside { width: 220px; flex-shrink: 0; }
-        .filter-title { font-family: 'Syne', sans-serif; font-size: 1rem; color: var(--tp); margin-bottom: 15px; border-bottom: 2px solid var(--pm); padding-bottom: 8px; }
-        .filter-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-        .filter-list li { padding: 8px 12px; border-radius: 8px; cursor: pointer; color: var(--tm); font-size: 0.9rem; transition: all .2s; }
-        .filter-list li:hover { background: var(--ibg); color: var(--pu); }
-        .filter-list li.active { background: linear-gradient(135deg, rgba(61,0,112,0.4), rgba(139,47,201,0.4)); color: #fff; border: 1px solid var(--border); }
-        main { flex: 1; }
-        .content-header { margin-bottom: 25px; }
-        .content-title { font-family: 'Syne', sans-serif; font-size: 1.8rem; margin-bottom: 5px; }
-        .content-sub { color: var(--tm); font-size: 0.9rem; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .doc-card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid var(--border); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 15px; transition: transform 0.3s ease, box-shadow 0.3s ease; position: relative; overflow: hidden; }
-        .doc-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(85, 13, 165, .3); border-color: rgba(170, 65, 255, .5); }
-        .doc-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(140, 47, 201, .15); display: flex; align-items: center; justify-content: center; color: var(--acc); margin-bottom: 5px; }
-        .doc-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; line-height: 1.3; }
-        .doc-author { font-size: 0.8rem; color: var(--tm); }
-        .doc-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-        .tag { font-size: 0.65rem; padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,0.05); color: var(--pu); border: 1px solid rgba(224, 168, 255, 0.2); }
-        .btn-download { margin-top: auto; padding: 10px; width: 100%; background: linear-gradient(135deg, var(--pm), var(--pg)); color: #fff; border: none; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 700; cursor: pointer; transition: box-shadow 0.2s, transform 0.1s; }
-        .btn-download:hover { box-shadow: 0 4px 15px rgba(85, 13, 165, .4); }
-        .btn-download:active { transform: scale(0.98); }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Библиотека НРТК</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root{--bg:#05010b;--bg2:#0d0616;--glass:rgba(18,10,30,.72);--glass2:rgba(255,255,255,.05);--border:rgba(184,110,255,.20);--border2:rgba(184,110,255,.32);--txt:#f7eefc;--muted:#ad91cd;--muted2:#7a618f;--accent:#bf5af2;--accent2:#8d32d6;--good:#2ecc71;--danger:#ff6b6b;--shadow:0 26px 70px rgba(0,0,0,.52);--radius:26px}
+    *{box-sizing:border-box} html,body{min-height:100%}
+    body{margin:0;font-family:'DM Sans',sans-serif;color:var(--txt);background:radial-gradient(1000px 600px at 15% 10%, rgba(143,59,232,.22), transparent 50%),radial-gradient(800px 520px at 84% 8%, rgba(191,90,242,.18), transparent 50%),linear-gradient(180deg, var(--bg), var(--bg2));}
+    body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(rgba(255,255,255,.12) 1px, transparent 1px);background-size:34px 34px;opacity:.07;pointer-events:none;z-index:-1}
+    .lamp{position:fixed;border-radius:50%;filter:blur(10px);pointer-events:none;z-index:0;animation:float 8s ease-in-out infinite}
+    .lamp.left{left:-120px;bottom:-120px;width:420px;height:420px;background:radial-gradient(circle, rgba(191,90,242,.26), rgba(191,90,242,.08) 35%, transparent 72%)}
+    .lamp.right{right:-120px;top:-100px;width:460px;height:460px;background:radial-gradient(circle, rgba(143,59,232,.20), rgba(143,59,232,.07) 35%, transparent 72%);animation-direction:reverse;animation-duration:10s}
+    .shell{position:relative;z-index:1;min-height:100vh;padding:22px;display:grid;grid-template-rows:auto auto auto 1fr;gap:16px}
+    .panel{border:1px solid var(--border);background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    .top{display:flex;align-items:center;gap:16px;padding:18px 20px}
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .brand-badge{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg, var(--accent2), var(--accent));box-shadow:0 12px 30px rgba(143,59,232,.34);flex:none}
+    .brand-badge svg{width:24px;height:24px;fill:#fff}
+    .brand h1{margin:0;font:800 1.12rem/1 'Syne',sans-serif;letter-spacing:-.03em}
+    .brand p{margin:.25rem 0 0;color:var(--muted);font-size:.84rem}
+    .search{flex:1;display:flex;align-items:center;gap:10px;min-width:0;padding:12px 14px;border-radius:16px;border:1px solid var(--border);background:rgba(255,255,255,.045)}
+    .search svg{width:18px;height:18px;color:var(--muted)}
+    .search input{width:100%;border:none;outline:none;background:transparent;color:var(--txt);font:500 .98rem 'DM Sans',sans-serif}
+    .search input::placeholder{color:#846d9b}
+    .userbox{display:flex;align-items:center;gap:12px;min-width:240px;justify-content:flex-end}
+    .avatar{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg, rgba(143,59,232,.35), rgba(191,90,242,.78));color:#fff;font:800 .95rem 'Syne',sans-serif;box-shadow:0 10px 24px rgba(143,59,232,.22)}
+    .profile{text-align:right;font-size:.9rem;color:var(--muted)}
+    .profile strong{display:block;color:var(--txt);font-size:1rem}
+    .logout{color:#e6c8ff;text-decoration:none;font-weight:700}.logout:hover{color:#fff}
+    .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}
+    .hero-card,.side-card,.tool-card,.doc-card,.admin-panel,.modal-card{background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+    .hero-card{padding:22px;position:relative;overflow:hidden}.hero-card::after{content:"";position:absolute;width:320px;height:320px;right:-120px;top:-120px;border-radius:50%;background:radial-gradient(circle, rgba(191,90,242,.20), transparent 66%);pointer-events:none}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted);font-size:.8rem}
+    .hero-card h2{margin:16px 0 10px;font:800 clamp(2rem, 4vw, 3.6rem)/.95 'Syne',sans-serif;letter-spacing:-.05em;max-width:12ch}
+    .hero-card h2 em{font-style:normal;background:linear-gradient(135deg, #fff, #d8b0ff 55%, #a35cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .hero-card p{margin:0;max-width:60ch;color:var(--muted);line-height:1.65;font-size:1.02rem}
+    .hero-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .ghost{border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--txt);border-radius:16px;padding:12px 16px;cursor:pointer;font:700 .92rem 'Syne',sans-serif;transition:transform .18s ease,border-color .18s ease,background .18s ease}.ghost:hover{transform:translateY(-1px);border-color:rgba(191,90,242,.45);background:rgba(255,255,255,.055)}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:18px}
+    .stat{padding:16px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);transition:transform .18s ease,border-color .18s ease}.stat:hover{transform:translateY(-2px);border-color:rgba(191,90,242,.3)}
+    .stat strong{display:block;font:800 1.35rem 'Syne',sans-serif;margin-bottom:4px}.stat span{color:var(--muted);font-size:.88rem}
+    .side-card{padding:18px;display:grid;gap:14px;align-content:start}.card-title{display:flex;align-items:center;justify-content:space-between;gap:12px}.card-title h3{margin:0;font:800 1.05rem 'Syne',sans-serif}
+    .badge{padding:7px 10px;border-radius:999px;background:rgba(191,90,242,.12);border:1px solid rgba(191,90,242,.24);color:#e8cbff;font-size:.78rem;white-space:nowrap}
+    .list{display:grid;gap:8px}.pill{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);color:var(--muted);font-size:.92rem;cursor:pointer;transition:.18s ease}.pill:hover,.pill.active{border-color:rgba(191,90,242,.45);color:var(--txt);transform:translateY(-1px);box-shadow:0 8px 20px rgba(143,59,232,.12)}
+    .pill small{color:inherit}
+    .course-strip{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.chip{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);color:#eadcff;font-size:.82rem;cursor:pointer;transition:.18s ease}.chip:hover,.chip.active{transform:translateY(-1px);border-color:rgba(191,90,242,.4);background:rgba(191,90,242,.12)}
+    .toolbar{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center}.tool-card{padding:12px 14px;display:flex;align-items:center;gap:10px;min-width:0}.tool-card input,.tool-card select{width:100%;border:none;outline:none;background:transparent;color:var(--txt);font:500 .95rem 'DM Sans',sans-serif}.tool-card select option{background:#12061d;color:#f4ecff}
+    main{display:grid;grid-template-columns:280px 1fr;gap:16px;align-items:start;min-height:0}
+    aside{position:sticky;top:16px;display:grid;gap:16px}.toolcard{padding:18px}.doc-area{display:grid;gap:16px;min-width:0}
+    .admin-panel{padding:18px;display:none}.admin-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}.admin-grid .field{display:grid;gap:8px}.admin-grid label{color:var(--muted);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase}.admin-grid input,.admin-grid select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rgba(184,110,255,.2);background:rgba(255,255,255,.04);color:var(--txt);outline:none;transition:.2s ease}.admin-grid input:focus,.admin-grid select:focus{border-color:rgba(191,90,242,.75);box-shadow:0 0 0 4px rgba(191,90,242,.12);background:rgba(255,255,255,.06)}
+    .wide{grid-column:1/-1}.toggle-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.switch{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.04);color:var(--muted);font-size:.9rem}.switch input{accent-color:var(--accent)}
+    .primary{border:none;cursor:pointer;border-radius:16px;padding:14px 16px;color:#fff;background:linear-gradient(135deg, var(--accent2), var(--accent));font:800 .98rem/1 'Syne',sans-serif;box-shadow:0 14px 30px rgba(143,59,232,.24);transition:transform .18s ease,box-shadow .18s ease}.primary:hover{transform:translateY(-1px);box-shadow:0 18px 34px rgba(143,59,232,.32)}
+    .docs-header{display:flex;justify-content:space-between;align-items:end;gap:12px}.docs-header h3{margin:0;font:800 1.2rem 'Syne',sans-serif}.docs-header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+    .doc-card{padding:18px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;min-height:100%;transition:transform .18s ease,border-color .18s ease,opacity .18s ease;animation:rise .35s ease both}.doc-card:hover{transform:translateY(-3px);border-color:rgba(191,90,242,.3)}.doc-card.hidden-card{opacity:.72}
+    .doc-card::before{content:"";position:absolute;inset:auto -80px -80px auto;width:190px;height:190px;background:radial-gradient(circle, rgba(191,90,242,.16), transparent 66%);pointer-events:none}
+    .doc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.doc-icon{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;background:rgba(191,90,242,.12);border:1px solid rgba(191,90,242,.18);color:#e3b7ff;flex:none}.doc-title{margin:0;font:800 1.08rem/1.25 'Syne',sans-serif}.doc-author{margin:0;color:var(--muted);font-size:.88rem;line-height:1.5}
+    .subline{display:flex;flex-wrap:wrap;gap:8px}.tag,.mini-tag,.hidden-badge{padding:5px 9px;border-radius:999px;font-size:.74rem;line-height:1}.tag,.mini-tag{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);color:#e8cbff}.hidden-badge{background:rgba(255,107,107,.12);border:1px solid rgba(255,107,107,.22);color:#ffd6d6}
+    .actions{display:flex;gap:10px;margin-top:auto}.btn2,.btn3,.btn4{border:none;border-radius:14px;cursor:pointer;transition:transform .18s ease,background .18s ease,border-color .18s ease}.btn2{flex:1;padding:12px 12px;font:800 .92rem/1 'Syne',sans-serif;color:#fff;background:linear-gradient(135deg, var(--accent2), var(--accent))}.btn3{width:46px;background:rgba(255,255,255,.05);color:var(--txt)}.btn4{padding:12px 12px;font:800 .9rem/1 'Syne',sans-serif;color:#fff;background:linear-gradient(135deg, #1f8f57, #2ecc71)}.btn2:hover,.btn3:hover,.btn4:hover{transform:translateY(-1px)}.btn3.active{background:rgba(191,90,242,.16);color:#fff;border:1px solid rgba(191,90,242,.3)}
+    .empty{padding:30px;border-radius:24px;border:1px dashed rgba(184,110,255,.25);background:rgba(255,255,255,.03);color:var(--muted);text-align:center;display:none}
+    .toast{position:fixed;right:22px;bottom:22px;min-width:220px;max-width:340px;padding:14px 16px;border-radius:16px;background:rgba(12,7,22,.92);border:1px solid var(--border2);color:var(--txt);box-shadow:var(--shadow);opacity:0;transform:translateY(10px);transition:.22s ease;pointer-events:none;z-index:60}.toast.show{opacity:1;transform:translateY(0)}
+    .modal{position:fixed;inset:0;display:none;place-items:center;padding:24px;background:rgba(3,1,7,.68);backdrop-filter:blur(10px);z-index:70}.modal.show{display:grid}.modal-card{width:min(760px, 100%);padding:22px;display:grid;gap:14px}.modal-head{display:flex;align-items:start;justify-content:space-between;gap:16px}.modal-head h4{margin:0;font:800 1.5rem 'Syne',sans-serif}.modal-head p{margin:6px 0 0;color:var(--muted)}
+    .close{width:42px;height:42px;border:none;border-radius:14px;background:rgba(255,255,255,.05);color:var(--txt);cursor:pointer;font-size:1.1rem}.recent{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.mini-link{padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);color:#e8cbff;font-size:.82rem;text-decoration:none}
+    @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}} @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+    @media (max-width:1120px){.hero,main{grid-template-columns:1fr}aside{position:static}.toolbar{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.userbox{min-width:0}}
+    @media (max-width:760px){.top{flex-wrap:wrap}.brand,.search,.userbox{width:100%}.stats{grid-template-columns:1fr}.admin-grid{grid-template-columns:1fr}.actions{flex-wrap:wrap}.hero-card h2{max-width:none}}
+  </style>
 </head>
 <body>
-    <header>
-        <div class="brand">
-            <div class="brand-icon">
-                <svg viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18V15c0 2.67 4.67 5 7 5s7-2.33 7-5v-3.82L22 9l-10-6zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 14.99c0 .72-2.13 2.01-5 2.01s-5-1.29-5-2V11.4l5 2.72 5-2.72v3.59z"/></svg>
-            </div>
-            <div class="brand-name">Библиотека НРТК</div>
-        </div>
-        <div class="search-bar">
-            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" placeholder="Поиск по предмету или автору..." id="searchInput">
-        </div>
-        <div class="user-profile" id="user-display">
-            </div>
+  <div class="lamp left"></div><div class="lamp right"></div>
+  <div class="shell">
+    <header class="panel top">
+      <div class="brand">
+        <div class="brand-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18V15c0 2.67 4.67 5 7 5s7-2.33 7-5v-3.82L22 9l-10-6zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 14.99c0 .72-2.13 2.01-5 2.01s-5-1.29-5-2V11.4l5 2.72 5-2.72v3.59z"/></svg></div>
+        <div><h1>Библиотека НРТК</h1><p>Методички, курсы, группы и скрытые материалы</p></div>
+      </div>
+      <label class="search" aria-label="Поиск по библиотеке">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input id="searchInput" type="text" placeholder="Поиск по названию, автору, тегу, курсу или группе..." />
+      </label>
+      <div class="userbox"><div class="profile" id="user-display"></div><div class="avatar" id="userAvatar">НР</div></div>
     </header>
 
-    <div class="container">
-        <aside>
-            <h3 class="filter-title">Группы</h3>
-            <ul class="filter-list" id="groupFilter">
-                <li class="active" data-group="all">Все методички</li>
-                <li data-group="isip">ИСиП (Инф. системы)</li>
-                <li data-group="mrep">МРЭП (Прог. инженерия)</li>
-                <li data-group="reus">РЭУС (Комп. сети)</li>
-                <li data-group="ibas">ИБАС (Комп. сети)</li>
-            </ul>
-        </aside>
+    <section class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">Made by Skafee with ❤️</div>
+        <h2>Все <em>методички</em> в одном месте</h2>
+        <p>Платформа разделена по курсам и группам. Преподаватель может публиковать материалы, скрывать их от студентов и распределять по нужным разделам. Студент видит только свой поток и свою группу.</p>
+        <div class="hero-tools"><button class="ghost" id="openRandom">Случайная методичка</button><button class="ghost" id="showFavorites">Только избранное</button><button class="ghost" id="clearFilters">Сбросить фильтры</button></div>
+        <div class="course-strip" id="courseStrip"></div>
+        <div class="stats"><div class="stat"><strong id="statDocs">0</strong><span>материалов видно</span></div><div class="stat"><strong id="statFavs">0</strong><span>в избранном</span></div><div class="stat"><strong id="statCourses">0</strong><span>активных курсов</span></div><div class="stat"><strong id="statHidden">0</strong><span>скрытых материалов</span></div></div>
+      </div>
+      <div class="side-card">
+        <div class="card-title"><h3>Разделы</h3><span class="badge" id="courseBadge">Все</span></div>
+        <div class="list" id="courseList"></div>
+        <div class="card-title" style="margin-top:6px"><h3>Группы</h3><span class="badge" id="groupBadge">Все</span></div>
+        <div class="list" id="groupList"></div>
+        <div style="padding:14px 16px;border-radius:18px;border:1px dashed rgba(184,110,255,.24);background:rgba(255,255,255,.025);color:var(--muted);line-height:1.55;font-size:.9rem;">У преподавателя есть кнопка скрытия в карточке и в окне просмотра. У студента показываются только открытые материалы своей группы и курса.</div>
+      </div>
+    </section>
 
-        <main>
-            <div id="adminPanel" style="display: none; background: var(--glass); backdrop-filter: blur(15px); border: 1px solid rgba(170, 65, 255, .5); border-radius: 16px; padding: 20px; margin-bottom: 25px;">
-    <h3 style="margin-bottom: 15px; font-family: 'Syne', sans-serif; color: var(--pu);">Добавить новую методичку (Панель преподавателя)</h3>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
-        <input type="text" id="newTitle" placeholder="Название (напр. Основы БД)" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--ibr); background: var(--ibg); color: var(--tp);">
-        <input type="text" id="newAuthor" placeholder="Автор (напр. Преп: Смирнов А.В.)" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--ibr); background: var(--ibg); color: var(--tp);">
-        <input type="text" id="newLink" placeholder="Ссылка на файл (Я.Диск, Google Drive)" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--ibr); background: var(--ibg); color: var(--tp);">
-    </div>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
-        <input type="text" id="newGroups" placeholder="Теги для фильтра (напр. is-22, ks-23)" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--ibr); background: var(--ibg); color: var(--tp);">
-        <input type="text" id="newTags" placeholder="Отображаемые теги (напр. ИС-22, C++)" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--ibr); background: var(--ibg); color: var(--tp);">
-        <input type="text" id="newType" placeholder="Формат (PDF, DOCX)" style="width: 150px; padding: 10px; border-radius: 8px; border: 1px solid var(--ibr); background: var(--ibg); color: var(--tp);">
-    </div>
-    <button id="js-add-book" style="padding: 10px 20px; background: linear-gradient(135deg, var(--pm), var(--pg)); color: #fff; border: none; border-radius: 8px; font-family: 'Syne', sans-serif; cursor: pointer;">Опубликовать</button>
-</div>
-            <div class="content-header">
-                <h1 class="content-title">Учебные материалы</h1>
-                <p class="content-sub">Выберите нужную методичку для скачивания или просмотра онлайн.</p>
-            </div>
-
-            <div class="grid" id="docsGrid"></div>
-        </main>
+    <div class="toolbar">
+      <div class="tool-card"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="searchInfo" type="text" placeholder="Искать по карточкам можно сразу здесь..." /></div>
+      <div class="tool-card"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/></svg><select id="sortSelect"><option value="popular">Сначала новые</option><option value="title">По названию</option><option value="course">По курсу</option><option value="group">По группе</option></select></div>
+      <button class="ghost" id="logoutBtn">Выйти</button>
     </div>
 
-    <script>
-       // 1. Проверяем авторизацию и выводим имя + роль
-const savedUser = JSON.parse(localStorage.getItem('nrtk_user'));
-const userDisplay = document.getElementById('user-display');
-const adminPanel = document.getElementById('adminPanel');
-
-if (!savedUser) {
-    window.location.href = 'index.html';
-} else {
-    // Если преподаватель - показываем админку
-    if (savedUser.role === 'teacher') {
-        userDisplay.innerHTML = `Преподаватель: ${savedUser.name} | <a href="index.html" onclick="localStorage.removeItem('nrtk_user')" style="color: var(--pb); text-decoration: none;">Выйти</a>`;
-        adminPanel.style.display = 'block';
-    } else {
-        userDisplay.innerHTML = `Студент: ${savedUser.name} | <a href="index.html" onclick="localStorage.removeItem('nrtk_user')" style="color: var(--pb); text-decoration: none;">Выйти</a>`;
-    }
-}
-
-// 2. БАЗА ДАННЫХ (теперь используем localStorage, чтобы новые записи сохранялись)
-const defaultDatabase = [
-    {
-        title: "Основы алгоритмизации и программирования",
-        author: "Преп: Смирнов А.В. • Практика №1-5",
-        groups: ["is-22", "pi-21"], 
-        tags: ["ИС-22", "ПИ-21", "C++"],
-        type: "PDF",
-        link: "https://ya.ru" // Замени на нужные ссылки
-    },
-    {
-        title: "Архитектура аппаратных средств",
-        author: "Преп: Иванов В.И. • Лабораторные",
-        groups: ["ks-23"],
-        tags: ["КС-23", "Железо"],
-        type: "DOCX",
-        link: "https://ya.ru"
-    }
-];
-
-// Пытаемся взять книги из памяти. Если их там нет — берем дефолтные
-let libraryDatabase = JSON.parse(localStorage.getItem('nrtk_books')) || defaultDatabase;
-
-// 3. Функция отрисовки карточек
-const grid = document.getElementById('docsGrid');
-
-function renderBooks(books) {
-    grid.innerHTML = ''; 
-    books.forEach(book => {
-        const tagsHTML = book.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-        
-        const cardHTML = `
-            <div class="doc-card" data-groups="${book.groups.join(' ')}">
-                <div class="doc-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                </div>
-                <h3 class="doc-title">${book.title}</h3>
-                <p class="doc-author">${book.author}</p>
-                <div class="doc-tags">${tagsHTML}</div>
-                <button class="btn-download" onclick="window.open('${book.link}', '_blank')">Скачать .${book.type}</button>
-            </div>
-        `;
-        grid.insertAdjacentHTML('beforeend', cardHTML);
-    });
-}
-
-renderBooks(libraryDatabase);
-
-// 4. Логика добавления методички преподавателем
-document.getElementById('js-add-book')?.addEventListener('click', () => {
-    const title = document.getElementById('newTitle').value.trim();
-    const author = document.getElementById('newAuthor').value.trim();
-    const link = document.getElementById('newLink').value.trim();
-    const groupsRaw = document.getElementById('newGroups').value.trim();
-    const tagsRaw = document.getElementById('newTags').value.trim();
-    const type = document.getElementById('newType').value.trim() || 'PDF';
-
-    if (!title || !author || !link) {
-        alert('Пожалуйста, заполните Название, Автора и Ссылку!');
-        return;
-    }
-
-    // Разбиваем запятые в массивы
-    const groups = groupsRaw ? groupsRaw.split(',').map(s => s.trim().toLowerCase()) : ['all'];
-    const tags = tagsRaw ? tagsRaw.split(',').map(s => s.trim()) : [];
-
-    const newBook = { title, author, link, groups, tags, type };
-    
-    // Сохраняем и перерисовываем
-    libraryDatabase.push(newBook);
-    localStorage.setItem('nrtk_books', JSON.stringify(libraryDatabase));
-    renderBooks(libraryDatabase);
-
-    // Очищаем поля
-    document.getElementById('newTitle').value = '';
-    document.getElementById('newAuthor').value = '';
-    document.getElementById('newLink').value = '';
-    document.getElementById('newGroups').value = '';
-    document.getElementById('newTags').value = '';
-    document.getElementById('newType').value = '';
-    
-    alert('Методичка успешно добавлена!');
-});
-
-// 5. Логика фильтров по группам
-const filterItems = document.querySelectorAll('.filter-list li');
-filterItems.forEach(item => {
-    item.addEventListener('click', () => {
-        filterItems.forEach(i => i.classList.remove('active'));
-        item.classList.add('active');
-        
-        const selectedGroup = item.getAttribute('data-group');
-        const cards = document.querySelectorAll('.doc-card');
-        
-        cards.forEach(card => {
-            const cardGroups = card.getAttribute('data-groups');
-            if (selectedGroup === 'all' || cardGroups.includes(selectedGroup)) {
-                card.style.display = 'flex';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    });
-});
-
-// 6. Поиск по тексту
-const searchInput = document.getElementById('searchInput');
-searchInput.addEventListener('input', (e) => {
-    const term = e.target.value.toLowerCase();
-    const cards = document.querySelectorAll('.doc-card');
-    
-    cards.forEach(card => {
-        const title = card.querySelector('.doc-title').textContent.toLowerCase();
-        const author = card.querySelector('.doc-author').textContent.toLowerCase();
-        
-        if (title.includes(term) || author.includes(term)) {
-            card.style.display = 'flex';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-});
-    </script>
+    <main>
+      <aside>
+        <div class="toolcard hero-card"><div class="card-title"><h3>Фильтры</h3><span class="badge" id="activeFilterLabel">Все</span></div><div class="list" id="quickFilterList"></div></div>
+        <div class="toolcard hero-card"><div class="card-title"><h3>Недавние</h3><span class="badge">быстрый доступ</span></div><div id="recentList" class="recent"></div></div>
+      </aside>
+      <section class="doc-area">
+        <div class="admin-panel" id="adminPanel">
+          <div class="card-title"><h3>Панель преподавателя</h3><span class="badge">публикация и скрытие</span></div>
+          <div class="admin-grid">
+            <div class="field"><label for="newTitle">Название</label><input id="newTitle" type="text" placeholder="Основы баз данных" /></div>
+            <div class="field"><label for="newAuthor">Автор / описание</label><input id="newAuthor" type="text" placeholder="Преп. Смирнов А.В. • лекция" /></div>
+            <div class="field wide"><label for="newLink">Ссылка на файл</label><input id="newLink" type="text" placeholder="https://..." /></div>
+            <div class="field"><label for="newCourse">Курс</label><select id="newCourse"><option>1 курс</option><option>2 курс</option><option>3 курс</option><option>4 курс</option></select></div>
+            <div class="field"><label for="newGroup">Группа</label><select id="newGroup"></select></div>
+            <div class="field wide"><label for="newTags">Теги</label><input id="newTags" type="text" placeholder="ИСиП, SQL, практика" /></div>
+            <div class="field wide"><div class="toggle-row"><label class="switch"><input id="newHidden" type="checkbox" /> Скрыть от студентов</label></div></div>
+            <div class="field wide"><button class="primary" id="addBookBtn" type="button">Опубликовать методичку</button></div>
+          </div>
+        </div>
+        <div class="docs-header"><div><h3>Учебные материалы</h3><p>Карточки распределены по курсам и группам. Открывайте, скрывайте и добавляйте в избранное.</p></div><span class="badge" id="resultsCount">0 материалов</span></div>
+        <div class="grid" id="docsGrid"></div>
+        <div class="empty" id="emptyState">По запросу ничего не найдено. Попробуйте другой запрос или сбросьте фильтры.</div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+  <div class="modal" id="modal"><div class="modal-card"><div class="modal-head"><div><h4 id="modalTitle"></h4><p id="modalMeta"></p></div><button class="close" id="closeModal" aria-label="Закрыть">✕</button></div><div id="modalBadges" class="subline"></div><p id="modalDesc" style="color:var(--muted); line-height:1.7; margin:0"></p><div id="modalMetaLine" class="subline"></div><div class="actions"><button class="btn2" id="modalOpen">Открыть файл</button><button class="btn3" id="modalFav">♡</button><button class="btn4" id="modalHide" style="display:none">Скрыть</button></div></div></div>
+  <script>
+    const GROUPS_BY_COURSE = {'1 курс':['А-11','Б-12'],'2 курс':['В-21'],'3 курс':['Г-31'],'4 курс':['Д-41']};
+    const DEFAULT_BOOKS = [
+      {id:'book-1',title:'Основы алгоритмизации и программирования',author:'Преп. Смирнов А.В. • практические работы',course:'1 курс',group:'А-11',tags:['алгоритмы','C++','практика'],link:'https://example.com',description:'Сборник методичек по базовым алгоритмам, циклам, массивам и структурам данных.',hidden:false,createdAt:'2026-04-10T10:00:00Z'},
+      {id:'book-2',title:'Архитектура аппаратных средств',author:'Преп. Иванов В.И. • лабораторный курс',course:'2 курс',group:'В-21',tags:['аппаратная часть','схемы','лаб.'],link:'https://example.com',description:'Материалы по устройству компьютера, периферии и базовой диагностике оборудования.',hidden:false,createdAt:'2026-04-12T10:00:00Z'},
+      {id:'book-3',title:'Основы баз данных',author:'Преп. Петрова Н.С. • лекции и практика',course:'1 курс',group:'Б-12',tags:['SQL','БД','нормализация'],link:'https://example.com',description:'Схемы, нормализация, SQL-запросы и подготовка к защите практических работ.',hidden:false,createdAt:'2026-04-15T10:00:00Z'},
+      {id:'book-4',title:'Информационная безопасность',author:'Преп. Соколова М.Ю. • обзорный модуль',course:'3 курс',group:'Г-31',tags:['ИБАС','безопасность','презентация'],link:'https://example.com',description:'Подборка по защите данных, угрозам, шифрованию и культуре безопасной работы.',hidden:true,createdAt:'2026-04-18T10:00:00Z'}
+    ];
+    const COURSE_ORDER=['1 курс','2 курс','3 курс','4 курс'];
+    const state={user:null,course:'all',group:'all',favoritesOnly:false,search:'',sort:'popular',selectedDoc:null};
+    const el=id=>document.getElementById(id);
+    const docsGrid=el('docsGrid'), emptyState=el('emptyState'), toast=el('toast'), modal=el('modal'), modalTitle=el('modalTitle'), modalMeta=el('modalMeta'), modalDesc=el('modalDesc'), modalBadges=el('modalBadges'), modalMetaLine=el('modalMetaLine'), modalOpen=el('modalOpen'), modalFav=el('modalFav'), modalHide=el('modalHide');
+    function loadUser(){const sessionUser=JSON.parse(sessionStorage.getItem('nrtk_user')||'null'); const savedUser=JSON.parse(localStorage.getItem('nrtk_user')||'null'); return sessionUser||savedUser;}
+    function getBooks(){const stored=JSON.parse(localStorage.getItem('nrtk_books')||'null'); return Array.isArray(stored)&&stored.length?stored:DEFAULT_BOOKS;}
+    function saveBooks(books){localStorage.setItem('nrtk_books',JSON.stringify(books));}
+    function getFavs(){return JSON.parse(localStorage.getItem('nrtk_favs')||'[]');}
+    function saveFavs(favs){localStorage.setItem('nrtk_favs',JSON.stringify(favs));}
+    function showToast(message){toast.textContent=message;toast.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>toast.classList.remove('show'),2400);}
+    function initials(name){const source=String(name||'НР'); const parts=source.split(/\s+/).filter(Boolean); return parts.slice(0,2).map(p=>p[0]?.toUpperCase()||'').join('').slice(0,2)||'НР';}
+    function formatDate(value){const date=new Date(value); return Number.isNaN(date.getTime())?'':date.toLocaleDateString('ru-RU',{day:'2-digit',month:'short',year:'numeric'});}
+    function normalize(s){return String(s||'').toLowerCase();}
+    function isTeacher(){return state.user?.role==='teacher';}
+    function visibleForCurrentUser(book){if(isTeacher()) return true; if(book.hidden) return false; const userCourse=state.user?.course; const userGroup=state.user?.group; const courseOk=!userCourse||book.course===userCourse; const groupOk=!userGroup||book.group===userGroup; return courseOk&&groupOk;}
+    function matchesBook(book){if(!visibleForCurrentUser(book)) return false; const q=normalize(state.search); const searchHit=!q || [book.title,book.author,book.course,book.group,...(book.tags||[])].some(v=>normalize(v).includes(q)); const courseHit=state.course==='all'||book.course===state.course; const groupHit=state.group==='all'||book.group===state.group; const favHit=!state.favoritesOnly||getFavs().includes(book.id); return searchHit&&courseHit&&groupHit&&favHit;}
+    function sortBooks(books){const sorted=[...books]; if(state.sort==='title') sorted.sort((a,b)=>a.title.localeCompare(b.title,'ru')); else if(state.sort==='course') sorted.sort((a,b)=>COURSE_ORDER.indexOf(a.course)-COURSE_ORDER.indexOf(b.course)||a.title.localeCompare(b.title,'ru')); else if(state.sort==='group') sorted.sort((a,b)=>(a.group||'').localeCompare(b.group||'','ru')); else sorted.sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0)); return sorted;}
+    function collectCourses(books){const set=new Set(); books.forEach(book=>set.add(book.course)); return [...set].sort((a,b)=>COURSE_ORDER.indexOf(a)-COURSE_ORDER.indexOf(b));}
+    function collectGroups(books){const set=new Set(); books.forEach(book=>set.add(book.group)); return [...set].sort((a,b)=>a.localeCompare(b,'ru'));}
+    function countVisible(books,predicate){return books.filter(book=>visibleForCurrentUser(book)&&predicate(book)).length;}
+    function courseLabel(value){return value==='all'?'Все':value;} function groupLabel(value){return value==='all'?'Все':value;}
+    function renderStats(books){const visibleBooks=books.filter(visibleForCurrentUser); const favs=getFavs().filter(id=>visibleBooks.some(book=>book.id===id)); const courses=new Set(visibleBooks.map(book=>book.course)); const hiddenCount=visibleBooks.filter(book=>book.hidden).length; el('statDocs').textContent=visibleBooks.filter(matchesBook).length; el('statFavs').textContent=favs.length; el('statCourses').textContent=courses.size; el('statHidden').textContent=isTeacher()?hiddenCount:0; el('resultsCount').textContent=`${visibleBooks.filter(matchesBook).length} материалов`;}
+    function renderQuickFilters(books){const visibleBooks=books.filter(visibleForCurrentUser); const courses=collectCourses(visibleBooks); const groups=collectGroups(visibleBooks); el('courseStrip').innerHTML=['all',...courses].map(item=>`<button class="chip ${state.course===item?'active':''}" data-course="${item}">${item==='all'?'Все курсы':item}</button>`).join(''); el('courseList').innerHTML=['all',...courses].map(item=>`<div class="pill ${state.course===item?'active':''}" data-course="${item}"><span>${item==='all'?'Все курсы':item}</span><small>${countVisible(books, book => item==='all' ? true : book.course===item)}</small></div>`).join(''); el('groupList').innerHTML=['all',...groups].map(item=>`<div class="pill ${state.group===item?'active':''}" data-group="${item}"><span>${item==='all'?'Все группы':item}</span><small>${countVisible(books, book => item==='all' ? true : book.group===item)}</small></div>`).join(''); el('courseBadge').textContent=courseLabel(state.course); el('groupBadge').textContent=groupLabel(state.group); el('activeFilterLabel').textContent=`${courseLabel(state.course)} / ${groupLabel(state.group)}`; const groupSelect=el('newGroup'); const selectedCourse=el('newCourse').value; groupSelect.innerHTML=(GROUPS_BY_COURSE[selectedCourse]||[]).map(g=>`<option value="${g}">${g}</option>`).join('');}
+    function renderRecent(books){const recent=[...books].filter(visibleForCurrentUser).sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0)).slice(0,4); const box=el('recentList'); box.innerHTML=recent.length ? recent.map(book=>`<a href="#" class="mini-link" data-recent="${book.id}">${book.title}</a>`).join('') : '<span style="color:var(--muted);font-size:.9rem">Пока пусто</span>';}
+    function openModal(book){state.selectedDoc=book; modalTitle.textContent=book.title; modalMeta.textContent=`${book.author}${book.hidden?' • скрыто':''}`; modalDesc.textContent=book.description||'Описание отсутствует.'; modalBadges.innerHTML=`<span class="mini-tag">${book.course}</span><span class="mini-tag">${book.group}</span>${(book.tags||[]).map(tag=>`<span class="tag">${tag}</span>`).join('')}`; modalMetaLine.innerHTML=`${book.hidden?'<span class="hidden-badge">Скрыто для студентов</span>':''}<span class="mini-tag">${formatDate(book.createdAt)||'без даты'}</span>`; modalOpen.onclick=()=>{window.open(book.link,'_blank','noopener'); addRecent(book.id);}; const favs=getFavs(); modalFav.textContent=favs.includes(book.id)?'♥':'♡'; modalFav.classList.toggle('active',favs.includes(book.id)); modalFav.onclick=()=>toggleFavorite(book.id); modalHide.style.display=isTeacher()?'inline-flex':'none'; modalHide.textContent=book.hidden?'Показать':'Скрыть'; modalHide.onclick=()=>toggleHidden(book.id); modal.classList.add('show');}
+    function addRecent(id){const items=JSON.parse(localStorage.getItem('nrtk_recent')||'[]'); const next=[id,...items.filter(x=>x!==id)].slice(0,6); localStorage.setItem('nrtk_recent',JSON.stringify(next)); renderRecent(getBooks());}
+    function toggleFavorite(id){const favs=getFavs(); const idx=favs.indexOf(id); if(idx>=0) favs.splice(idx,1); else favs.unshift(id); saveFavs(favs); renderAll(); if(state.selectedDoc){const book=getBooks().find(item=>item.id===state.selectedDoc.id); if(book) openModal(book);} showToast(idx>=0?'Убрано из избранного':'Добавлено в избранное');}
+    function toggleHidden(id){if(!isTeacher()) return; const books=getBooks(); const target=books.find(book=>book.id===id); if(!target) return; target.hidden=!target.hidden; saveBooks(books); renderAll(); const updated=books.find(book=>book.id===id); if(updated) openModal(updated); showToast(updated?.hidden?'Методичка скрыта':'Методичка показана');}
+    function renderBooks(){const books=sortBooks(getBooks()).filter(matchesBook); docsGrid.innerHTML=''; emptyState.style.display=books.length ? 'none' : 'block'; const favs=getFavs(); books.forEach(book=>{const card=document.createElement('article'); card.className=`doc-card ${book.hidden?'hidden-card':''}`; card.innerHTML=`<div class="doc-top"><div class="doc-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div><div style="display:grid; gap:8px; justify-items:end; text-align:right">${book.hidden?'<span class="hidden-badge">Скрыто</span>':''}<span class="badge">${book.course}</span></div></div><h4 class="doc-title">${book.title}</h4><p class="doc-author">${book.author}</p><div class="subline"><span class="mini-tag">${book.group}</span><span class="mini-tag">${formatDate(book.createdAt)||'без даты'}</span></div><div class="subline">${(book.tags||[]).map(tag=>`<span class="tag">${tag}</span>`).join('')}</div><div class="actions"><button class="btn2" data-open>Просмотр</button><button class="btn3 ${favs.includes(book.id)?'active':''}" data-fav title="Избранное">${favs.includes(book.id)?'♥':'♡'}</button>${isTeacher()?`<button class="btn4" data-hide>${book.hidden?'Показать':'Скрыть'}</button>`:''}</div>`; card.querySelector('[data-open]').addEventListener('click',()=>{openModal(book); addRecent(book.id);}); card.querySelector('[data-fav]').addEventListener('click',()=>toggleFavorite(book.id)); const hideBtn=card.querySelector('[data-hide]'); if(hideBtn) hideBtn.addEventListener('click',()=>toggleHidden(book.id)); docsGrid.appendChild(card);}); renderStats(getBooks());}
+    function renderAll(){const books=getBooks(); renderQuickFilters(books); renderStats(books); renderRecent(books); renderBooks();}
+    function applyCourse(course){state.course=course; state.group='all'; state.favoritesOnly=false; renderAll();}
+    function applyGroup(group){state.group=group; state.course='all'; state.favoritesOnly=false; renderAll();}
+    const user=loadUser(); if(!user){window.location.href='index.html';} else {state.user=user; const role=user.role==='teacher'?'Преподаватель':'Студент'; el('user-display').innerHTML=`<strong>${role}: ${user.name || user.login}</strong><a class="logout" href="#">Выйти</a>`; el('userAvatar').textContent=initials(user.name || user.login); if(user.role==='teacher'){el('adminPanel').style.display='block';} else {if(user.course) state.course=user.course; if(user.group) state.group=user.group;} el('logoutBtn').addEventListener('click',()=>{sessionStorage.removeItem('nrtk_user'); localStorage.removeItem('nrtk_user'); window.location.href='index.html';}); document.querySelector('.logout').addEventListener('click',e=>{e.preventDefault(); el('logoutBtn').click();}); }
+    el('searchInput').addEventListener('input',e=>{state.search=e.target.value; el('searchInfo').value=e.target.value; renderBooks();});
+    el('searchInfo').addEventListener('input',e=>{state.search=e.target.value; el('searchInput').value=e.target.value; renderBooks();});
+    el('sortSelect').addEventListener('change',e=>{state.sort=e.target.value; renderBooks();});
+    document.addEventListener('click',e=>{const courseBtn=e.target.closest('[data-course]'); if(courseBtn) return applyCourse(courseBtn.dataset.course); const groupBtn=e.target.closest('[data-group]'); if(groupBtn) return applyGroup(groupBtn.dataset.group); const recent=e.target.closest('[data-recent]'); if(recent){e.preventDefault(); const book=getBooks().find(item=>item.id===recent.dataset.recent); if(book&&visibleForCurrentUser(book)){openModal(book); addRecent(book.id);} } });
+    el('clearFilters').addEventListener('click',()=>{state.course='all'; state.group='all'; state.favoritesOnly=false; state.search=''; state.sort='popular'; el('searchInput').value=''; el('searchInfo').value=''; el('sortSelect').value='popular'; renderAll(); showToast('Фильтры сброшены');});
+    el('showFavorites').addEventListener('click',()=>{state.favoritesOnly=true; renderBooks(); showToast('Показываю только избранное');});
+    el('openRandom').addEventListener('click',()=>{const books=sortBooks(getBooks()).filter(matchesBook); if(!books.length) return showToast('Нечего открыть'); const book=books[Math.floor(Math.random()*books.length)]; openModal(book); addRecent(book.id);});
+    el('closeModal').addEventListener('click',()=>modal.classList.remove('show')); modal.addEventListener('click',e=>{if(e.target===modal) modal.classList.remove('show');});
+    el('newCourse').addEventListener('change',()=>{const course=el('newCourse').value; el('newGroup').innerHTML=(GROUPS_BY_COURSE[course]||[]).map(g=>`<option value="${g}">${g}</option>`).join('');});
+    el('addBookBtn').addEventListener('click',()=>{if(!isTeacher()) return; const title=el('newTitle').value.trim(); const author=el('newAuthor').value.trim(); const link=el('newLink').value.trim(); const course=el('newCourse').value; const group=el('newGroup').value; const tags=el('newTags').value.split(',').map(x=>x.trim()).filter(Boolean); const hidden=el('newHidden').checked; if(!title || !author || !link){showToast('Заполните название, автора и ссылку'); return;} const books=getBooks(); books.unshift({id:'book-'+Date.now(), title, author, link, course, group, tags, description:'Новое учебное пособие добавлено через панель преподавателя.', hidden, createdAt:new Date().toISOString()}); saveBooks(books); ['newTitle','newAuthor','newLink','newTags'].forEach(id=>el(id).value=''); el('newHidden').checked=false; el('newCourse').value='1 курс'; el('newCourse').dispatchEvent(new Event('change')); renderAll(); showToast('Методичка опубликована');});
+    renderAll();
+  </script>
 </body>
 </html>
