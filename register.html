@@ -1,204 +1,71 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NRTC-LIB — Регистрация</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-    <style>
-        /* Те же самые стили, что и в index.html */
-        :root {
-            --on: 0;
-            --opening: hsl(270, calc((10 + var(--on) * 70) * 1%), calc((18 + var(--on) * 68) * 1%));
-            --base-top: hsl(270, calc(var(--on) * 25%), calc((30 + var(--on) * 38) * 1%));
-            --base-side: hsl(270, calc(var(--on) * 25%), calc((15 + var(--on) * 35) * 1%));
-            --post: hsl(270, calc(var(--on) * 20%), calc((18 + var(--on) * 35) * 1%));
-            --shade-l: hsl(270, calc(var(--on) * 35%), calc((28 + var(--on) * 55) * 1%));
-            --shade-m: hsl(270, calc(var(--on) * 35%), calc((16 + var(--on) * 32) * 1%));
-            --shade-d: hsl(270, calc(var(--on) * 35%), calc((9 + var(--on) * 18) * 1%));
-            --blend-a: hsla(270, calc(var(--on) * 30%), calc((45 + var(--on) * 50) * 1%), 0.85);
-            --blend-b: hsla(270, calc(var(--on) * 30%), calc((18 + var(--on) * 28) * 1%), 0.25);
-            --blend-c: hsla(270, calc(var(--on) * 30%), calc((18 + var(--on) * 28) * 1%), 0.50);
-            --glow-a: hsla(270, calc(var(--on) * 40%), calc((40 + var(--on) * 55) * 1%), 0.85);
-            --cord-l: calc((38 + var(--on) * 52) * 1%);
-            --bg: #07000d; --pm: #3d0070; --pg: #8b2fc9; --pb: #c678f5; --pu: #e0a8ff;
-            --acc: #bf5af2; --tp: #f0e4ff; --tm: #a07ec0;
-            --glass: rgba(26, 4, 50, 0.65); --border: rgba(140, 50, 200, 0.28);
-            --ibg: rgba(255, 255, 255, 0.043); --ibr: rgba(180, 100, 255, 0.18);
-            --ease-spring: 0.88s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { width: 100%; height: 100%; overflow: hidden; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--bg); display: flex; align-items: center; justify-content: center; }
-        body::after {
-            content: ''; position: fixed; inset: 0;
-            background: radial-gradient(ellipse 50% 65% at 60% 50%, rgba(100, 20, 180, .38) 0%, rgba(40, 5, 80, .12) 52%, transparent 75%);
-            opacity: var(--on); transition: opacity .9s ease; pointer-events: none; z-index: 0;
-        }
-        .scene { position: relative; z-index: 10; display: flex; align-items: center; gap: 80px; }
-        .lamp { height: 46vmin; min-height: 300px; max-height: 420px; overflow: visible !important; flex-shrink: 0; }
-        .lamp-cord { stroke: hsl(270, 0%, var(--cord-l)); transition: stroke .1s; }
-        .lamp-light { opacity: var(--on); }
-        .fill-opening { fill: var(--opening); } .fill-base-top { fill: var(--base-top); }
-        .fill-base-side { fill: var(--base-side); } .fill-post { fill: var(--post); } .fill-shade { fill: var(--shade-d); }
-        .lamp-hit { cursor: grab; fill: transparent; } .lamp-hit:active { cursor: grabbing; }
-        .card {
-            width: 320px; padding: 32px 28px 28px; background: var(--glass);
-            backdrop-filter: blur(28px) saturate(1.5); -webkit-backdrop-filter: blur(28px) saturate(1.5);
-            border-radius: 22px; border: 1px solid var(--border); box-shadow: 0 22px 56px rgba(0, 0, 0, .72);
-            opacity: 0; transform: scale(.90) translateX(12px);
-            transition: opacity var(--ease-spring), transform var(--ease-spring), border-color var(--ease-spring), box-shadow var(--ease-spring);
-            pointer-events: none; position: relative; overflow: hidden;
-        }
-        .card::before { content: ''; position: absolute; inset: 0; border-radius: 22px; background: linear-gradient(138deg, rgba(255, 255, 255, .05) 0%, transparent 55%); pointer-events: none; }
-        .card.is-active { opacity: 1; transform: scale(1) translateX(0); pointer-events: auto; border-color: rgba(170, 65, 255, .38); box-shadow: 0 22px 56px rgba(0, 0, 0, .65), 0 0 44px 3px rgba(118, 30, 192, .16), 0 0 80px 12px rgba(55, 7, 110, .10); }
-        .brand-name { font-family: 'Syne', sans-serif; font-size: 1.50rem; font-weight: 800; background: linear-gradient(130deg, var(--pu), var(--pb) 55%, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .card-sub { font-size: .75rem; color: var(--tm); margin-top: 5px; margin-bottom: 18px; }
-        .card-sep { width: 26px; height: 2px; background: linear-gradient(90deg, var(--pg), transparent); border-radius: 2px; margin-bottom: 16px; }
-        .field { margin-bottom: 12px; }
-        .field label { display: block; font-size: .64rem; font-weight: 500; color: var(--tm); letter-spacing: .09em; text-transform: uppercase; margin-bottom: 5px; }
-        .field-wrap { position: relative; display: flex; align-items: center; }
-        .field-wrap input { width: 100%; padding: 10px 11px 10px 15px; background: var(--ibg); border: 1px solid var(--ibr); border-radius: 10px; color: var(--tp); font-family: 'DM Sans', sans-serif; font-size: .84rem; outline: none; transition: .28s; }
-        .field-wrap input::placeholder { color: rgba(160, 126, 192, .26); }
-        .field-wrap input:focus { border-color: var(--acc); background: rgba(140, 47, 201, .07); box-shadow: 0 0 0 3px rgba(140, 47, 201, .12); }
-        .btn-submit { width: 100%; padding: 11px; background: linear-gradient(135deg, var(--pm), var(--pg)); color: #fff; font-family: 'Syne', sans-serif; font-size: .87rem; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; margin-top: 10px; transition: transform .18s, box-shadow .28s; }
-        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(85, 13, 165, .55); }
-        .signup { text-align: center; margin-top: 14px; font-size: .72rem; color: var(--tm); }
-        .signup a { color: var(--pb); text-decoration: none; font-weight: 500; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>НРТК LIB — Регистрация</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root{--bg:#05010b;--bg2:#0d0616;--border:rgba(184,110,255,.22);--border2:rgba(184,110,255,.34);--txt:#f7eefc;--muted:#ad91cd;--muted2:#7a618f;--accent:#bf5af2;--accent2:#8d32d6;--shadow:0 28px 80px rgba(0,0,0,.56);--radius:28px}
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0;font-family:'DM Sans',sans-serif;color:var(--txt);background:radial-gradient(1100px 700px at 14% 10%, rgba(143,59,232,.25), transparent 50%),radial-gradient(900px 520px at 86% 12%, rgba(191,90,242,.18), transparent 50%),linear-gradient(180deg, var(--bg), var(--bg2));overflow:hidden}
+    body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(rgba(255,255,255,.12) 1px, transparent 1px);background-size:34px 34px;opacity:.07;pointer-events:none}
+    .shell{min-height:100%;padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .panel{border:1px solid var(--border);background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    .left,.right{padding:26px;display:flex;flex-direction:column;justify-content:space-between;gap:18px}
+    .brand{display:flex;align-items:center;gap:12px}.brand-badge{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent2),var(--accent));box-shadow:0 12px 30px rgba(143,59,232,.38)}.brand-badge svg{width:24px;height:24px;fill:#fff}.brand h1{margin:0;font:800 1.2rem/1 'Syne',sans-serif}.brand p{margin:.25rem 0 0;color:var(--muted);font-size:.88rem}
+    .preview{display:grid;gap:14px}.big{padding:18px;border-radius:24px;background:rgba(255,255,255,.04);border:1px solid var(--border)}.big strong{display:block;font:800 1.6rem 'Syne',sans-serif;margin-bottom:6px}.big span{color:var(--muted);line-height:1.55}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.step{padding:16px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)}.step b{display:block;font:800 1rem 'Syne',sans-serif;margin-bottom:4px}.step small{color:var(--muted)}.note{padding:14px 16px;border-radius:18px;border:1px dashed rgba(184,110,255,.24);background:rgba(255,255,255,.025);color:var(--muted);line-height:1.55;font-size:.9rem}
+    .card{width:min(460px,100%);margin:auto;padding:28px;border-radius:26px;background:rgba(14,7,26,.74);border:1px solid var(--border2);box-shadow:0 18px 50px rgba(0,0,0,.45);position:relative;overflow:hidden}.card::before{content:"";position:absolute;inset:0;background:linear-gradient(140deg, rgba(255,255,255,.06), transparent 48%);pointer-events:none}.card h2{margin:6px 0 6px;font:800 1.7rem/1 'Syne',sans-serif}.card p.sub{margin:0 0 20px;color:var(--muted);line-height:1.55}.form{display:grid;gap:14px;position:relative;z-index:1}.field{display:grid;gap:8px}.field label{color:var(--muted);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase}.input,.select{width:100%;border:1px solid rgba(184,110,255,.2);background:rgba(255,255,255,.04);color:var(--txt);border-radius:16px;padding:14px 15px;font:500 .98rem/1.2 'DM Sans',sans-serif;outline:none;transition:.2s ease}.input:focus,.select:focus{border-color:rgba(191,90,242,.75);box-shadow:0 0 0 4px rgba(191,90,242,.12);background:rgba(255,255,255,.06)}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.btn{border:none;cursor:pointer;border-radius:16px;padding:14px 16px;color:#fff;background:linear-gradient(135deg,var(--accent2),var(--accent));font:800 1rem/1 'Syne',sans-serif;box-shadow:0 14px 30px rgba(143,59,232,.28);transition:transform .18s ease,box-shadow .18s ease}.btn:hover{transform:translateY(-2px);box-shadow:0 18px 34px rgba(143,59,232,.38)}.back{display:inline-flex;align-items:center;gap:8px;color:#d7b7ff;text-decoration:none;font-size:.92rem;margin-top:2px}.back:hover{color:#fff}.msg{display:none;padding:12px 14px;border-radius:14px;font-size:.92rem;line-height:1.5}.msg.ok{display:block;background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.28);color:#dff8e9}.msg.err{display:block;background:rgba(255,90,90,.12);border:1px solid rgba(255,90,90,.25);color:#ffd9d9}
+    @media (max-width:980px){body{overflow:auto}.shell{grid-template-columns:1fr;min-height:100%;overflow:auto}.steps{grid-template-columns:1fr}}
+  </style>
 </head>
 <body>
-    <div class="scene">
-        <svg class="lamp" viewBox="0 0 333 484" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <ellipse class="fill-opening" cx="165" cy="220" rx="130" ry="20" />
-            <ellipse cx="165" cy="220" rx="130" ry="20" fill="url(#grad-opening)" style="opacity:calc(1 - var(--on))" />
-            <path class="fill-base-side" d="M165 464c44.183 0 80-8.954 80-20v-14h-22.869c-14.519-3.703-34.752-6-57.131-6-22.379 0-42.612 2.297-57.131 6H85v14c0 11.046 35.817 20 80 20z" />
-            <path d="M165 464c44.183 0 80-8.954 80-20v-14h-22.869c-14.519-3.703-34.752-6-57.131-6-22.379 0-42.612 2.297-57.131 6H85v14c0 11.046 35.817 20 80 20z" fill="url(#grad-side)" />
-            <ellipse class="fill-base-top" cx="165" cy="430" rx="80" ry="20" />
-            <ellipse cx="165" cy="430" rx="80" ry="20" fill="url(#grad-base)" />
-            <path class="fill-post" d="M180 142h-30v286c0 3.866 6.716 7 15 7 8.284 0 15-3.134 15-7V142z" />
-            <path d="M180 142h-30v286c0 3.866 6.716 7 15 7 8.284 0 15-3.134 15-7V142z" fill="url(#grad-post)" />
-            <path id="js-cord" class="lamp-cord" d="M124 190 L124 348" stroke-width="6" stroke-linecap="round" />
-            <path class="lamp-light" d="M290.5 193H39L0 463.5c0 11.046 75.478 20 165.5 20s167-11.954 167-23l-42-267.5z" fill="url(#grad-light)" />
-            <path class="fill-shade" fill-rule="evenodd" clip-rule="evenodd" d="M164.859 0c55.229 0 100 8.954 100 20l29.859 199.06C291.529 208.451 234.609 200 164.859 200S38.189 208.451 35 219.06L64.859 20c0-11.046 44.772-20 100-20z" />
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M164.859 0c55.229 0 100 8.954 100 20l29.859 199.06C291.529 208.451 234.609 200 164.859 200S38.189 208.451 35 219.06L64.859 20c0-11.046 44.772-20 100-20z" fill="url(#grad-shade)" />
-            <defs>
-                <linearGradient id="grad-opening" x1="35" y1="220" x2="295" y2="220" gradientUnits="userSpaceOnUse"><stop /><stop offset="1" stop-opacity="0" /></linearGradient>
-                <linearGradient id="grad-base" x1="85" y1="444" x2="245" y2="444" gradientUnits="userSpaceOnUse"><stop stop-color="var(--blend-a)" /><stop offset=".8" stop-color="var(--blend-b)" stop-opacity="0" /></linearGradient>
-                <linearGradient id="grad-side" x1="119" y1="430" x2="245" y2="430" gradientUnits="userSpaceOnUse"><stop stop-color="var(--blend-c)" /><stop offset="1" stop-color="var(--blend-b)" stop-opacity="0" /></linearGradient>
-                <linearGradient id="grad-post" x1="150" y1="288" x2="180" y2="288" gradientUnits="userSpaceOnUse"><stop stop-color="var(--blend-a)" /><stop offset="1" stop-color="var(--blend-b)" stop-opacity="0" /></linearGradient>
-                <linearGradient id="grad-light" x1="165.5" y1="218.5" x2="165.5" y2="340" gradientUnits="userSpaceOnUse"><stop stop-color="var(--glow-a)" stop-opacity=".10" /><stop offset="1" stop-color="var(--glow-a)" stop-opacity="0" /></linearGradient>
-                <linearGradient id="grad-shade" x1="56" y1="110" x2="295" y2="110" gradientUnits="userSpaceOnUse"><stop stop-color="var(--shade-l)" stop-opacity=".8" /><stop offset="1" stop-color="var(--shade-m)" stop-opacity="0" /></linearGradient>
-            </defs>
-            <circle id="js-hit" class="lamp-hit" cx="124" cy="348" r="60" />
-        </svg>
-
-        <div class="card" id="js-card">
-            <div class="brand-name">Регистрация</div>
-            <p class="card-sub">Создайте аккаунт для доступа к библиотеке</p>
-            <div class="card-sep"></div>
-
-            <div class="field">
-                <label>ФИО и Группа</label>
-                <div class="field-wrap">
-                    <input type="text" id="reg-name" placeholder="Иванов И. (1ИСиП25-4к)" />
-                </div>
-            </div>
-
-            <div class="field">
-                <label>Придумайте Логин</label>
-                <div class="field-wrap">
-                    <input type="text" id="reg-name" placeholder="User" />
-                </div>
-
-            <div class="field">
-                <label>Придумайте Пароль</label>
-                <div class="field-wrap">
-                    <input type="password" id="reg-password" placeholder="••••••••" />
-                </div>
-            </div>
-                <div class="field-wrap">
-        <select id="reg-role" style="width: 100%; padding: 10px 11px; background: var(--ibg); border: 1px solid var(--ibr); border-radius: 10px; color: var(--tp); font-family: 'DM Sans', sans-serif; font-size: .84rem; outline: none;">
-            <option value="student" style="background: var(--bg); color: var(--tp);">Студент</option>
-            <option value="teacher" style="background: var(--bg); color: var(--tp);">Преподаватель</option>
-        </select>
-    </div>
-</div>
-
-            <button class="btn-submit" id="js-register" type="button">Создать аккаунт</button>
-
-            <p class="signup">Уже есть аккаунт? <a href="index.html">Войти</a></p>
+  <div class="shell">
+    <section class="panel left">
+      <div>
+        <div class="brand"><div class="brand-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18V15c0 2.67 4.67 5 7 5s7-2.33 7-5v-3.82L22 9l-10-6zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 14.99c0 .72-2.13 2.01-5 2.01s-5-1.29-5-2V11.4l5 2.72 5-2.72v3.59z"/></svg></div><div><h1>Библиотека НРТК</h1><p>Создание личного кабинета</p></div></div>
+        <div class="preview">
+          <div class="big"><strong>Один аккаунт — один доступ</strong><span>После регистрации данные сохраняются в браузере, а вход сразу открывает библиотеку с нужной ролью.</span></div>
+          <div class="steps"><div class="step"><b>1. Имя</b><small>ФИО</small></div><div class="step"><b>2. Логин</b><small>Удобный ник</small></div><div class="step"><b>3. Роль</b><small>Студент или преподаватель</small></div></div>
         </div>
-    </div>
+      </div>
+      <div class="note">У студента можно сразу сохранить курс и группу, чтобы библиотека открывалась уже с нужным разделением.</div>
+    </section>
 
-    <script>
-        // Анимация шнура и лампы
-        const ROOT = document.documentElement; const BODY = document.body; const card = document.getElementById('js-card');
-        const cord = document.getElementById('js-cord'); const hit = document.getElementById('js-hit'); const lampEl = document.querySelector('.lamp');
-        const AX = 124, AY = 190; const REST_X = 124, REST_Y = 348; const TRIGGER_DIST = 55;
-        let dragging = false, animating = false, lightOn = false, curX = REST_X, curY = REST_Y;
+    <section class="panel right">
+      <div class="card" id="regCard">
+        <h2>Регистрация</h2>
+        <p class="sub">Заполните поля, чтобы создать аккаунт для входа в библиотеку.</p>
+        <div class="form">
+          <div class="field"><label for="reg-name">ФИО</label><input class="input" type="text" id="reg-name" placeholder="Иванов И.И." autocomplete="name" /></div>
+          <div class="field"><label for="reg-login">Логин</label><input class="input" type="text" id="reg-login" placeholder="student01" autocomplete="username" /></div>
+          <div class="row">
+            <div class="field"><label for="reg-password">Пароль</label><input class="input" type="password" id="reg-password" placeholder="••••••••" autocomplete="new-password" /></div>
+            <div class="field"><label for="reg-role">Роль</label><select class="select" id="reg-role"><option value="student">Студент</option><option value="teacher">Преподаватель</option></select></div>
+          </div>
+          <div class="row">
+            <div class="field"><label for="reg-course">Курс</label><select class="select" id="reg-course"><option value="">Не выбран</option><option>1 курс</option><option>2 курс</option><option>3 курс</option><option>4 курс</option></select></div>
+            <div class="field"><label for="reg-group">Группа</label><select class="select" id="reg-group"><option value="">Сначала курс</option></select></div>
+          </div>
+          <button class="btn" id="registerBtn" type="button">Создать аккаунт</button>
+          <a class="back" href="index.html">← Уже есть аккаунт? Войти</a>
+          <div class="msg" id="messageBox"></div>
+        </div>
+      </div>
+    </section>
+  </div>
 
-        function toSVG(sx, sy) { const pt = lampEl.createSVGPoint(); pt.x = sx; pt.y = sy; return pt.matrixTransform(lampEl.getScreenCTM().inverse()); }
-        function buildCord(tx, ty) { const dx = tx - AX, dy = ty - AY; const sag = Math.max(4, 30 - Math.hypot(dx, dy) * 0.06); const c1x = AX + dx * 0.15 + sag, c1y = AY + dy * 0.30 + sag; const c2x = AX + dx * 0.70 - sag * 0.3, c2y = AY + dy * 0.72 - sag * 0.2; return `M${AX},${AY} C${c1x},${c1y} ${c2x},${c2y} ${tx},${ty}`; }
-        function updateCord(tx, ty) { curX = tx; curY = ty; cord.setAttribute('d', buildCord(tx, ty)); const tension = Math.min(Math.hypot(tx - REST_X, ty - REST_Y) / 120, 1); cord.style.stroke = `hsl(270, 0%, ${Math.round(38 + tension * 52)}%)`; }
-        function springBack(fromX, fromY, triggered) {
-            if (animating) return; animating = true; const dur = triggered ? 380 : 500; const t0 = performance.now();
-            function tick(now) { const t = Math.min((now - t0) / dur, 1); const fn = triggered ? easeElastic(t) : easeOutBounce(t); updateCord(fromX + (REST_X - fromX) * fn, fromY + (REST_Y - fromY) * fn); if (t < 1) { requestAnimationFrame(tick); return; } updateCord(REST_X, REST_Y); cord.style.stroke = ''; animating = false; }
-            requestAnimationFrame(tick);
-        }
-        function easeElastic(t) { if (!t || t === 1) return t; return Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * (2 * Math.PI / 3)) + 1; }
-        function easeOutBounce(t) { if (t < 1 / 2.75) return 7.5625 * t * t; if (t < 2 / 2.75) { t -= 1.5 / 2.75; return 7.5625 * t * t + 0.750; } if (t < 2.5 / 2.75) { t -= 2.25 / 2.75; return 7.5625 * t * t + 0.9375; } t -= 2.625 / 2.75; return 7.5625 * t * t + 0.984375; }
-        function client(e) { return e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY }; }
-        function onDown(e) { if (animating) return; e.preventDefault(); dragging = true; }
-        function onMove(e) { if (!dragging) return; e.preventDefault(); const { x, y } = client(e); const sv = toSVG(x, y); updateCord(sv.x, Math.max(AY + 20, sv.y)); }
-        function onUp() { if (!dragging) return; dragging = false; const dist = Math.hypot(curX - REST_X, curY - REST_Y); if (dist > TRIGGER_DIST) toggleLight(); springBack(curX, curY, dist > TRIGGER_DIST); }
-
-        [hit, cord].forEach(el => { el.addEventListener('mousedown', onDown); el.addEventListener('touchstart', onDown, { passive: false }); });
-        window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onUp); window.addEventListener('touchmove', onMove, { passive: false }); window.addEventListener('touchend', onUp);
-
-        function toggleLight() { lightOn = !lightOn; ROOT.style.setProperty('--on', lightOn ? '1' : '0'); card.classList.toggle('is-active', lightOn); }
-
-        // Логика регистрации
-        document.getElementById('js-register').addEventListener('click', function () {
-            const name = document.getElementById('reg-name').value.trim();
-            const login = document.getElementById('reg-login').value.trim();
-            const pass = document.getElementById('reg-password').value.trim();
-
-            if (!name || !login || !pass) {
-                this.style.animation = 'none'; void this.offsetHeight; this.style.animation = 'shake .4s ease'; return;
-            }
-
-            const user = { name: name, login: login, password: pass };
-            localStorage.setItem('nrtk_user', JSON.stringify(user));
-
-            this.textContent = 'Успешно! Перенаправляем...';
-            this.style.background = 'linear-gradient(135deg, #1a5c35, #27ae60)';
-
-            setTimeout(() => { window.location.href = 'index.html'; }, 1000);
-        });
-        // Замени логику внутри обработчика 'js-register' на эту:
-document.getElementById('js-register').addEventListener('click', function () {
-    const name = document.getElementById('reg-name').value.trim();
-    const login = document.getElementById('reg-login').value.trim();
-    const pass = document.getElementById('reg-password').value.trim();
-    const role = document.getElementById('reg-role').value; // <-- Добавили получение роли
-
-    if (!name || !login || !pass) {
-        this.style.animation = 'none'; void this.offsetHeight; this.style.animation = 'shake .4s ease'; return;
-    }
-
-    // Сохраняем роль вместе с остальными данными
-    const user = { name: name, login: login, password: pass, role: role };
-    localStorage.setItem('nrtk_user', JSON.stringify(user));
-
-    this.textContent = 'Успешно! Перенаправляем...';
-    this.style.background = 'linear-gradient(135deg, #1a5c35, #27ae60)';
-
-    setTimeout(() => { window.location.href = 'index.html'; }, 1000);
-});
-    </script>
+  <script>
+    const COURSE_GROUPS = {'1 курс':['А-11','Б-12'],'2 курс':['В-21'],'3 курс':['Г-31'],'4 курс':['Д-41']};
+    const regCard = document.getElementById('regCard');
+    const messageBox = document.getElementById('messageBox');
+    function shake(){regCard.style.animation='none'; void regCard.offsetHeight; regCard.style.animation='shake .42s ease';}
+    function getUsers(){return JSON.parse(localStorage.getItem('nrtk_users')||'[]');}
+    function updateGroups(){const course=document.getElementById('reg-course').value; const group=document.getElementById('reg-group'); const items=COURSE_GROUPS[course]||[]; group.innerHTML=`<option value="">${course ? 'Выберите группу' : 'Сначала курс'}</option>` + items.map(g=>`<option value="${g}">${g}</option>`).join('');}
+    document.getElementById('reg-course').addEventListener('change', updateGroups);
+    document.getElementById('registerBtn').addEventListener('click', ()=>{const name=document.getElementById('reg-name').value.trim(); const login=document.getElementById('reg-login').value.trim(); const password=document.getElementById('reg-password').value; const role=document.getElementById('reg-role').value; const course=document.getElementById('reg-course').value; const group=document.getElementById('reg-group').value; messageBox.className='msg'; messageBox.style.display='none'; if(!name || !login || !password){messageBox.className='msg err'; messageBox.textContent='Заполните имя, логин и пароль.'; messageBox.style.display='block'; shake(); return;} if(role==='student' && (!course || !group)){messageBox.className='msg err'; messageBox.textContent='Для студента выберите курс и группу.'; messageBox.style.display='block'; shake(); return;} const users=getUsers(); if(users.some(u=>u.login.toLowerCase()===login.toLowerCase())){messageBox.className='msg err'; messageBox.textContent='Такой логин уже занят. Выберите другой.'; messageBox.style.display='block'; shake(); return;} const user={name,login,password,role,course:role==='student'?course:'',group:role==='student'?group:'',createdAt:new Date().toISOString()}; users.push(user); localStorage.setItem('nrtk_users', JSON.stringify(users)); localStorage.setItem('nrtk_user', JSON.stringify(user)); messageBox.className='msg ok'; messageBox.textContent='Аккаунт создан. Можно входить.'; messageBox.style.display='block'; document.getElementById('registerBtn').textContent='Готово!';});
+  </script>
 </body>
 </html>
