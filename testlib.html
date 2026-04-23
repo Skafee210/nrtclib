@@ -95,6 +95,7 @@
         <div class="course-strip" id="courseStrip"></div>
         <div class="stats"><div class="stat"><strong id="statDocs">0</strong><span>материалов видно</span></div><div class="stat"><strong id="statFavs">0</strong><span>в избранном</span></div><div class="stat"><strong id="statCourses">0</strong><span>активных курсов</span></div><div class="stat"><strong id="statHidden">0</strong><span>скрытых материалов</span></div></div>
       </div>
+      
     </section>
 
     <div class="toolbar">
@@ -131,12 +132,12 @@
   <div class="toast" id="toast"></div>
   <div class="modal" id="modal"><div class="modal-card"><div class="modal-head"><div><h4 id="modalTitle"></h4><p id="modalMeta"></p></div><button class="close" id="closeModal" aria-label="Закрыть">✕</button></div><div id="modalBadges" class="subline"></div><p id="modalDesc" style="color:var(--muted); line-height:1.7; margin:0"></p><div id="modalMetaLine" class="subline"></div><div class="actions"><button class="btn2" id="modalOpen">Открыть файл</button><button class="btn3" id="modalFav">♡</button><button class="btn4" id="modalHide" style="display:none">Скрыть</button></div></div></div>
   <script>
-    const GROUPS_BY_COURSE = {'1 курс':['А-11','Б-12'],'2 курс':['В-21'],'3 курс':['Г-31'],'4 курс':['Д-41']};
+    const GROUPS_BY_COURSE = {'1 курс':['1ИСиП25-4к','1ИСиП-1'],'2 курс':['2ИБАС24-2'],'3 курс':['3ИСИП23-1'],'4 курс':['4ИСиП22-1']};
     const DEFAULT_BOOKS = [
-      {id:'book-1',title:'Основы алгоритмизации и программирования',author:'Преп. Смирнов А.В. • практические работы',course:'1 курс',group:'А-11',tags:['алгоритмы','C++','практика'],link:'https://example.com',description:'Сборник методичек по базовым алгоритмам, циклам, массивам и структурам данных.',hidden:false,createdAt:'2026-04-10T10:00:00Z'},
+      {id:'book-1',title:'Основы алгоритмизации и программирования',author:'Преп. Смирнов А.В. • практические работы',course:'1 курс',group:'1ИСиП25-4к',tags:['алгоритмы','C++','практика'],link:'https://example.com',description:'Сборник методичек по базовым алгоритмам, циклам, массивам и структурам данных.',hidden:false,createdAt:'2026-04-10T10:00:00Z'},
       {id:'book-2',title:'Архитектура аппаратных средств',author:'Преп. Иванов В.И. • лабораторный курс',course:'2 курс',group:'В-21',tags:['аппаратная часть','схемы','лаб.'],link:'https://example.com',description:'Материалы по устройству компьютера, периферии и базовой диагностике оборудования.',hidden:false,createdAt:'2026-04-12T10:00:00Z'},
-      {id:'book-3',title:'Основы баз данных',author:'Преп. Петрова Н.С. • лекции и практика',course:'1 курс',group:'Б-12',tags:['SQL','БД','нормализация'],link:'https://example.com',description:'Схемы, нормализация, SQL-запросы и подготовка к защите практических работ.',hidden:false,createdAt:'2026-04-15T10:00:00Z'},
-      {id:'book-4',title:'Информационная безопасность',author:'Преп. Соколова М.Ю. • обзорный модуль',course:'3 курс',group:'Г-31',tags:['ИБАС','безопасность','презентация'],link:'https://example.com',description:'Подборка по защите данных, угрозам, шифрованию и культуре безопасной работы.',hidden:true,createdAt:'2026-04-18T10:00:00Z'}
+      {id:'book-3',title:'Основы баз данных',author:'Преп. Петрова Н.С. • лекции и практика',course:'1 курс',group:'2ИБАС24-2',tags:['SQL','БД','нормализация'],link:'https://example.com',description:'Схемы, нормализация, SQL-запросы и подготовка к защите практических работ.',hidden:false,createdAt:'2026-04-15T10:00:00Z'},
+      {id:'book-4',title:'Информационная безопасность',author:'Преп. Соколова М.Ю. • обзорный модуль',course:'3 курс',group:'3ИСИП23-1',tags:['ИБАС','безопасность','презентация'],link:'https://example.com',description:'Подборка по защите данных, угрозам, шифрованию и культуре безопасной работы.',hidden:true,createdAt:'2026-04-18T10:00:00Z'}
     ];
     const COURSE_ORDER=['1 курс','2 курс','3 курс','4 курс'];
     const state={user:null,course:'all',group:'all',favoritesOnly:false,search:'',sort:'popular',selectedDoc:null};

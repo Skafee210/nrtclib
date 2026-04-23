@@ -11,10 +11,8 @@
     :root{
       --bg:#05010b;
       --bg2:#0d0616;
-      --glass:rgba(22, 8, 38, .64);
-      --glass2:rgba(255,255,255,.05);
-      --border:rgba(184, 110, 255, .22);
-      --border2:rgba(184, 110, 255, .34);
+      --border:rgba(184,110,255,.22);
+      --border2:rgba(184,110,255,.34);
       --txt:#f7eefc;
       --muted:#ad91cd;
       --muted2:#7a618f;
@@ -34,13 +32,14 @@
         radial-gradient(1100px 700px at 14% 10%, rgba(143,59,232,.25), transparent 50%),
         radial-gradient(900px 520px at 86% 12%, rgba(191,90,242,.18), transparent 50%),
         linear-gradient(180deg, var(--bg), var(--bg2));
-      overflow:hidden;
+      overflow-x:hidden;
+      overflow-y:auto;
     }
     body::before{
       content:"";
       position:fixed; inset:0;
-      background-image: radial-gradient(rgba(255,255,255,.12) 1px, transparent 1px);
-      background-size: 34px 34px;
+      background-image:radial-gradient(rgba(255,255,255,.12) 1px, transparent 1px);
+      background-size:34px 34px;
       opacity:.07;
       pointer-events:none;
     }
@@ -54,7 +53,12 @@
       animation:float 8s ease-in-out infinite;
       pointer-events:none;
     }
-    .lamp.l2{inset: -110px -100px auto auto; width:460px; height:460px; animation-duration:10s; animation-direction:reverse}
+    .lamp.l2{
+      inset:-110px -100px auto auto;
+      width:460px; height:460px;
+      animation-duration:10s;
+      animation-direction:reverse;
+    }
     .wrap{
       min-height:100%;
       display:grid;
@@ -63,12 +67,13 @@
       padding:28px;
       position:relative;
       z-index:1;
+      align-items:stretch;
     }
     .panel{
       border:1px solid var(--border);
       background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
       overflow:hidden;
@@ -77,8 +82,10 @@
     .hero{
       display:flex;
       flex-direction:column;
-      justify-content:space-between;
+      justify-content:flex-start;
+      gap:22px;
       padding:32px;
+      min-height:calc(100vh - 56px);
     }
     .hero::after{
       content:"";
@@ -89,20 +96,38 @@
       filter:blur(10px);
       pointer-events:none;
     }
-    .topbar{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:24px; position:relative; z-index:1}
-    .brand{display:flex; align-items:center; gap:12px}
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      position:relative;
+      z-index:1;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
     .brand-badge{
-      width:48px; height:48px; border-radius:16px;
-      display:grid; place-items:center;
+      width:48px;height:48px;
+      border-radius:16px;
+      display:grid;place-items:center;
       background:linear-gradient(135deg, var(--accent2), var(--accent));
       box-shadow:0 12px 30px rgba(143,59,232,.38);
       flex:none;
     }
-    .brand-badge svg{width:24px; height:24px; fill:#fff}
-    .brand h1{margin:0; font:800 1.18rem/1 'Syne',sans-serif; letter-spacing:-.03em}
-    .brand p{margin:.25rem 0 0; color:var(--muted); font-size:.86rem}
+    .brand-badge svg{width:24px;height:24px;fill:#fff}
+    .brand h1{
+      margin:0;
+      font:800 1.18rem/1 'Syne',sans-serif;
+      letter-spacing:-.03em;
+    }
+    .brand p{
+      margin:.25rem 0 0;
+      color:var(--muted);
+      font-size:.86rem;
+    }
     .status{
-      display:inline-flex; align-items:center; gap:8px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
       padding:10px 14px;
       border-radius:999px;
       border:1px solid var(--border);
@@ -110,28 +135,41 @@
       color:var(--muted);
       font-size:.83rem;
       white-space:nowrap;
+      flex:none;
     }
     .status-dot{
-      width:10px; height:10px; border-radius:50%; background:var(--good);
+      width:10px;height:10px;
+      border-radius:50%;
+      background:var(--good);
       box-shadow:0 0 0 5px rgba(46,204,113,.12);
     }
-    .hero-copy{max-width:620px; position:relative; z-index:1}
+    .hero-copy{
+      max-width:620px;
+      position:relative;
+      z-index:1;
+      display:grid;
+      gap:18px;
+      align-content:start;
+      margin-top:4px;
+    }
     .eyebrow{
-      display:inline-flex; align-items:center; gap:8px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
       padding:8px 12px;
       border-radius:999px;
       border:1px solid var(--border);
       background:rgba(255,255,255,.04);
       color:var(--muted);
       font-size:.8rem;
-      margin-bottom:18px;
+      width:max-content;
     }
     .eyebrow span{color:#fff}
     .hero h2{
       margin:0;
-      font:800 clamp(2.3rem, 4vw, 4.6rem)/.92 'Syne',sans-serif;
+      font:800 clamp(2.2rem, 4vw, 4.5rem)/.92 'Syne',sans-serif;
       letter-spacing:-.05em;
-      max-width:10ch;
+      max-width:11ch;
     }
     .hero h2 em{
       font-style:normal;
@@ -141,16 +179,16 @@
     }
     .hero p.desc{
       max-width:54ch;
-      margin:18px 0 0;
+      margin:0;
       color:var(--muted);
-      font-size:1.04rem;
+      font-size:1.03rem;
       line-height:1.65;
     }
     .highlights{
       display:grid;
       grid-template-columns:repeat(3, minmax(0,1fr));
       gap:14px;
-      margin-top:28px;
+      margin-top:4px;
     }
     .mini{
       padding:16px;
@@ -160,26 +198,21 @@
       transform:translateY(0);
       transition:transform .22s ease, border-color .22s ease, background .22s ease;
     }
-    .mini:hover{transform:translateY(-2px); border-color:rgba(191,90,242,.42); background:rgba(255,255,255,.055)}
-    .mini strong{display:block; font:800 1.08rem 'Syne',sans-serif; margin-bottom:4px}
-    .mini span{color:var(--muted); font-size:.86rem; line-height:1.5}
-    .feature-strip{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:auto;
-      padding-top:30px;
+    .mini:hover{
+      transform:translateY(-2px);
+      border-color:rgba(191,90,242,.42);
+      background:rgba(255,255,255,.055);
     }
-    .chip{
-      padding:9px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.08);
-      color:#eadcff;
-      font-size:.82rem;
-      transition:transform .2s ease, border-color .2s ease;
+    .mini strong{
+      display:block;
+      font:800 1.08rem 'Syne',sans-serif;
+      margin-bottom:4px;
     }
-    .chip:hover{transform:translateY(-1px); border-color:rgba(191,90,242,.35)}
+    .mini span{
+      color:var(--muted);
+      font-size:.86rem;
+      line-height:1.5;
+    }
     .login{
       display:flex;
       align-items:center;
@@ -187,10 +220,10 @@
       padding:28px;
     }
     .card{
-      width:min(440px, 100%);
+      width:min(440px,100%);
       padding:28px;
       border-radius:26px;
-      background:rgba(14, 7, 26, .74);
+      background:rgba(14,7,26,.74);
       border:1px solid var(--border2);
       box-shadow:0 18px 50px rgba(0,0,0,.45);
       position:relative;
@@ -199,14 +232,31 @@
     }
     .card::before{
       content:"";
-      position:absolute; inset:0;
+      position:absolute;
+      inset:0;
       background:linear-gradient(140deg, rgba(255,255,255,.06), transparent 48%);
       pointer-events:none;
     }
-    .card h3{margin:6px 0 6px; font:800 1.7rem/1 'Syne',sans-serif; letter-spacing:-.03em}
-    .card p.sub{margin:0 0 20px; color:var(--muted); line-height:1.55}
-    .form{display:grid; gap:14px; position:relative; z-index:1}
-    .field{display:grid; gap:8px}
+    .card h3{
+      margin:6px 0 6px;
+      font:800 1.7rem/1 'Syne',sans-serif;
+      letter-spacing:-.03em;
+    }
+    .card p.sub{
+      margin:0 0 20px;
+      color:var(--muted);
+      line-height:1.55;
+    }
+    .form{
+      display:grid;
+      gap:14px;
+      position:relative;
+      z-index:1;
+    }
+    .field{
+      display:grid;
+      gap:8px;
+    }
     .field label{
       color:var(--muted);
       font-size:.74rem;
@@ -233,22 +283,34 @@
     .input::placeholder{color:#8e74a4}
     .pw-wrap{position:relative}
     .toggle{
-      position:absolute; right:12px; top:50%; transform:translateY(-50%);
-      width:34px; height:34px;
-      border:none; border-radius:10px;
-      background:transparent; color:var(--muted);
+      position:absolute;
+      right:12px;
+      top:50%;
+      transform:translateY(-50%);
+      width:34px;
+      height:34px;
+      border:none;
+      border-radius:10px;
+      background:transparent;
+      color:var(--muted);
       cursor:pointer;
     }
     .toggle:hover{color:#fff}
     .meta{
-      display:flex; justify-content:space-between; align-items:center; gap:12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
       margin-top:4px;
       color:var(--muted2);
       font-size:.84rem;
     }
-    .remember{display:flex; align-items:center; gap:8px}
+    .remember{display:flex;align-items:center;gap:8px}
     .remember input{accent-color:var(--accent)}
-    .link{color:#d7b7ff; text-decoration:none}
+    .link{
+      color:#d7b7ff;
+      text-decoration:none;
+    }
     .link:hover{color:#fff}
     .btn{
       border:none;
@@ -266,23 +328,30 @@
     .btn::after{
       content:"";
       position:absolute;
-      top:-50%; left:-45%;
-      width:40%; height:200%;
+      top:-50%;
+      left:-45%;
+      width:40%;
+      height:200%;
       background:rgba(255,255,255,.16);
       transform:skewX(-22deg);
       transition:left .42s ease;
     }
-    .btn:hover{transform:translateY(-2px); box-shadow:0 18px 34px rgba(143,59,232,.38); filter:saturate(1.05)}
+    .btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 18px 34px rgba(143,59,232,.38);
+      filter:saturate(1.05);
+    }
     .btn:hover::after{left:120%}
     .btn:active{transform:translateY(0)}
     .toast{
       position:fixed;
-      right:24px; bottom:24px;
+      right:24px;
+      bottom:24px;
       min-width:240px;
       max-width:320px;
       padding:14px 16px;
       border-radius:16px;
-      background:rgba(12, 7, 22, .92);
+      background:rgba(12,7,22,.92);
       border:1px solid var(--border2);
       color:var(--txt);
       box-shadow:var(--shadow);
@@ -292,15 +361,24 @@
       pointer-events:none;
       z-index:50;
     }
-    .toast.show{opacity:1; transform:translateY(0)}
-    .error{display:none; color:#ffb0b0; font-size:.88rem; line-height:1.45; margin-top:2px}
+    .toast.show{
+      opacity:1;
+      transform:translateY(0);
+    }
+    .error{
+      display:none;
+      color:#ffb0b0;
+      font-size:.88rem;
+      line-height:1.45;
+      margin-top:2px;
+    }
     @keyframes float{
       0%,100%{transform:translate3d(0,0,0) scale(1)}
       50%{transform:translate3d(0,-10px,0) scale(1.03)}
     }
     @keyframes rise{
-      from{opacity:0; transform:translateY(14px) scale(.985)}
-      to{opacity:1; transform:translateY(0) scale(1)}
+      from{opacity:0;transform:translateY(14px) scale(.985)}
+      to{opacity:1;transform:translateY(0) scale(1)}
     }
     @keyframes shake{
       0%,100%{transform:translateX(0)}
@@ -309,18 +387,17 @@
       60%{transform:translateX(-4px)}
       80%{transform:translateX(4px)}
     }
-    @media (max-width: 980px){
+    @media (max-width:980px){
       body{overflow:auto}
-      .wrap{grid-template-columns:1fr; min-height:100%; overflow:auto}
+      .wrap{grid-template-columns:1fr;min-height:100%;overflow:auto}
       .hero{min-height:unset}
       .highlights{grid-template-columns:1fr}
     }
-    @media (max-width: 640px){
+    @media (max-width:640px){
       .topbar{flex-wrap:wrap}
-      .status{width:100%; justify-content:center}
+      .status{width:100%;justify-content:center}
       .hero,.login{padding:22px}
-      .feature-strip{padding-top:22px}
-      .meta{flex-direction:column; align-items:flex-start}
+      .meta{flex-direction:column;align-items:flex-start}
     }
   </style>
 </head>
@@ -336,7 +413,7 @@
           </div>
           <div>
             <h1>Библиотека НРТК</h1>
-            <p>Методички, конспекты и учебные материалы</p>
+            <p>Методические пособия, конспекты и другие учебные материалы</p>
           </div>
         </div>
         <div class="status"><span class="status-dot"></span> Защищённый вход</div>
@@ -344,7 +421,7 @@
 
       <div class="hero-copy">
         <div class="eyebrow">Современный доступ • <span>для студентов и преподавателей</span></div>
-        <h2>Открой <em>единый</em> вход в библиотеку</h2>
+        <h2>Добро <em>пожаловать</em> в библиотеку</h2>
         <p class="desc">
           Здесь можно быстро войти в личный кабинет и перейти к материалам вашей группы или курса.
           Преподавателю доступна отдельная панель для скрытия и публикации методичек.
@@ -357,18 +434,12 @@
           </div>
           <div class="mini">
             <strong>Удобно</strong>
-            <span>Роли, курсы и группы уже встроены</span>
+            <span>Удобное распределение по группам</span>
           </div>
           <div class="mini">
             <strong>Красиво</strong>
-            <span>Glass UI, свет лампы и мягкие анимации</span>
+            <span>Приятные и плавные анимации</span>
           </div>
-        </div>
-        <div class="feature-strip">
-          <span class="chip">Живой эффект лампы</span>
-          <span class="chip">Glass UI</span>
-          <span class="chip">Мягкие уведомления</span>
-          <span class="chip">Новый визуальный стиль</span>
         </div>
       </div>
     </section>
@@ -398,7 +469,6 @@
           </div>
 
           <button class="btn" id="submitLogin" type="button">Войти в библиотеку</button>
-
           <div class="error" id="errorBox"></div>
         </div>
       </div>
@@ -458,9 +528,7 @@
       const matched = users.find(user => user.login === login && user.password === password);
 
       if (!matched) {
-        errorBox.textContent = users.length
-          ? 'Неверный логин или пароль.'
-          : 'Аккаунт не найден. Сначала зарегистрируйтесь.';
+        errorBox.textContent = users.length ? 'Неверный логин или пароль.' : 'Аккаунт не найден. Сначала зарегистрируйтесь.';
         errorBox.style.display = 'block';
         shake();
         if (!users.length) window.location.href = 'register.html';
